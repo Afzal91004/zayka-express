@@ -1,0 +1,7 @@
+{
+  "name": "zayka-express",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
