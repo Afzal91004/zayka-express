@@ -7,162 +7,34 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <ion-row class="borderBottom">
-    <div>
-      <swiper-container 
-      [modules]="swiperModules" 
-      [slidesPerView]="1.2"
-      [keyboard]="true" 
-      [autoplay]="true"
-      [spaceBetween]="20"
-      [pagination]="{clickable: true, dynamicBullets: true}"
-    >
-      <swiper-slide>
-        <img src="assets/img2.jpg" alt="">
-      </swiper-slide>
-      <swiper-slide>
-        <img src="assets/img1.jpg" alt="">
-      </swiper-slide>
-      <swiper-slide>
-        <img src="assets/img3.jpg" alt="">
-      </swiper-slide>
-    </swiper-container>
-    </div>
-  </ion-row>
+  <div *ngIf="isLoading">
+    <ion-skeleton-text animated style="height: 25vh;">
+    </ion-skeleton-text>
+  </div>
 
-  <ion-list>
+  <app-loading-restaurant *ngIf="isLoading"></app-loading-restaurant>
+
+  <app-banner 
+  *ngIf="!isLoading"
+  [bannerImages]="banners"
+  >
+  </app-banner>
+
+  <ion-list *ngIf="!isLoading">
     <ion-list-header class="ion-margin-bottom">
       <ion-label>
         <h4>Restaurants Nearby</h4>
         <p>Discover unique tastes near you</p>
       </ion-label>
     </ion-list-header>
-    <ion-item lines="none">
-      <ion-thumbnail slot="start">
-        <img src="assets/img2.jpg" alt="">
-      </ion-thumbnail>
-      <ion-label>
-        <h4>Abc Restaurant</h4>
-        <ion-text color="medium">
-          <p class="pStyle">Italian, Mexican</p>
-          <ion-text color="dark">
-            <span>
-              <ion-icon name="star"></ion-icon>
-            5.
-            </span>
-            25 mins . ₹100 for two
-          </ion-text>
-          <ion-text color="tertiary">
-            <p class="distance">2.59 kms away</p>
-          </ion-text>
-        </ion-text>
-      </ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-thumbnail slot="start">
-        <img src="assets/img1.jpg" alt="">
-      </ion-thumbnail>
-      <ion-label>
-        <h4>Abc Restaurant</h4>
-        <ion-text color="medium">
-          <p class="pStyle">Italian, Mexican</p>
-          <ion-text color="dark">
-            <span>
-              <ion-icon name="star"></ion-icon>
-            5.
-            </span>
-            25 mins . ₹100 for two
-          </ion-text>
-          <ion-text color="tertiary">
-            <p class="distance">2.59 kms away</p>
-          </ion-text>
-        </ion-text>
-      </ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-thumbnail slot="start">
-        <img src="assets/img3.jpg" alt="">
-      </ion-thumbnail>
-      <ion-label>
-        <h4>Abc Restaurant</h4>
-        <ion-text color="medium">
-          <p class="pStyle">Italian, Mexican</p>
-          <ion-text color="dark">
-            <span>
-              <ion-icon name="star"></ion-icon>
-            5.
-            </span>
-            25 mins . ₹100 for two
-          </ion-text>
-          <ion-text color="tertiary">
-            <p class="distance">2.59 kms away</p>
-          </ion-text>
-        </ion-text>
-      </ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-thumbnail slot="start">
-        <img src="assets/img1.jpg" alt="">
-      </ion-thumbnail>
-      <ion-label>
-        <h4>Abc Restaurant</h4>
-        <ion-text color="medium">
-          <p class="pStyle">Italian, Mexican</p>
-          <ion-text color="dark">
-            <span>
-              <ion-icon name="star"></ion-icon>
-            5.
-            </span>
-            25 mins . ₹100 for two
-          </ion-text>
-          <ion-text color="tertiary">
-            <p class="distance">2.59 kms away</p>
-          </ion-text>
-        </ion-text>
-      </ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-thumbnail slot="start">
-        <img src="assets/img2.jpg" alt="">
-      </ion-thumbnail>
-      <ion-label>
-        <h4>Abc Restaurant</h4>
-        <ion-text color="medium">
-          <p class="pStyle">Italian, Mexican</p>
-          <ion-text color="dark">
-            <span>
-              <ion-icon name="star"></ion-icon>
-            5.
-            </span>
-            25 mins . ₹100 for two
-          </ion-text>
-          <ion-text color="tertiary">
-            <p class="distance">2.59 kms away</p>
-          </ion-text>
-        </ion-text>
-      </ion-label>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-thumbnail slot="start">
-        <img src="assets/img3.jpg" alt="">
-      </ion-thumbnail>
-      <ion-label>
-        <h4>Abc Restaurant</h4>
-        <ion-text color="medium">
-          <p class="pStyle">Italian, Mexican</p>
-          <ion-text color="dark">
-            <span>
-              <ion-icon name="star"></ion-icon>
-            5.
-            </span>
-            25 mins . ₹100 for two
-          </ion-text>
-          <ion-text color="tertiary">
-            <p class="distance">2.59 kms away</p>
-          </ion-text>
-        </ion-text>
-      </ion-label>
-    </ion-item>
+    <ion-item-group *ngIf="restaurants?.length > 0">
+      <app-restaurant 
+      *ngFor="let restaurant of restaurants" 
+      [restaurant]="restaurant"
+      [routerLink]="['/', 'tabs', 'restaurants', restaurant.uid]"
+    >
+    </app-restaurant>
+    </ion-item-group>
   </ion-list>
   
 </ion-content>
