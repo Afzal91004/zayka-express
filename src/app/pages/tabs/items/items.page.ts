@@ -15,8 +15,13 @@ export class ItemsPage implements OnInit {
   data: any = {};
   items: any[] = [];
   veg: boolean;
+  isLoading: boolean;
   cartData: any= {} ;
-  storeData: any = {};
+  storedData: any = {};
+  model = {
+    icon: 'fast-food-outline',
+    title: 'No Menu Available'
+  };
   restaurants = [
     {
       uid: '123abc',
@@ -200,10 +205,12 @@ export class ItemsPage implements OnInit {
   }
 
   async getItems(){
+    this.isLoading = true;
     this.data = {};
     this.cartData = {};
-    this.storeData = {};
-    let data: any = this.restaurants.filter(x => x.uid === this.id);
+    this.storedData = {};
+    setTimeout(async () => {
+      let data: any = this.restaurants.filter(x => x.uid === this.id);
     this.data = data[0];
     this.categories = this.categories.filter(x => x.uid === this.id)
     this.items = this.allItems.filter(x => x.uid === this.id);
@@ -211,19 +218,21 @@ export class ItemsPage implements OnInit {
     let cart: any = await this.getCart();
     console.log('cart: ', cart);
     if(cart?.value){
-      this.storeData = JSON.parse(cart.value);
-      console.log('storeData: ', this.storeData);
-      if(this.id == this.storeData.restaurant.uid && this.allItems.length > 0){
+      this.storedData = JSON.parse(cart.value);
+      console.log('storedData: ', this.storedData);
+      if(this.id == this.storedData.restaurant.uid && this.allItems.length > 0){
         this.allItems.forEach((element: any) => {
-          this.storeData.items.forEach(ele => {
+          this.storedData.items.forEach(ele => {
             if(element.id != ele.id) return;
             element.quantity = ele.quantity
           })
         })
       }
-      this.cartData.totalItem = this.storeData.totalItems;
-      this.cartData.totalPrice = this.storeData.totalPrice;
+      this.cartData.totalItem = this.storedData.totalItems;
+      this.cartData.totalPrice = this.storedData.totalPrice;
     }
+    this.isLoading = false;
+    }, 2000)
   }
 
   getCuisine(cuisine){
@@ -238,7 +247,7 @@ export class ItemsPage implements OnInit {
     console.log('items: ', this.items)
   }
 
-  quantityPlus(item, index){
+  quantityPlus(index){
     try{
       console.log(this.items[index]);
       if (!this.items[index].quantity || this.items[index].quantity == 0){
@@ -253,7 +262,7 @@ export class ItemsPage implements OnInit {
     }
   }
 
-  quantityMinus(item, index){
+  quantityMinus(index){
     if(this.items[index].quantity !== 0){
       this.items[index].quantity -= 1;
     } else {
@@ -266,11 +275,11 @@ export class ItemsPage implements OnInit {
     console.log(this.items)
     this.cartData.items = [];
     let item = this.items.filter(x => x.quantity > 0);
-    console.log('added ', item);
+    console.log('added items: ', item);
     this.cartData.items = item;
     this.cartData.totalPrice = 0;
     this.cartData.totalItem = 0;
-    item.forEach(element=>{
+    item.forEach(element => {
       this.cartData.totalItem += element.quantity;
       this.cartData.totalPrice += (parseFloat(element.price) * parseFloat(element.quantity));
     });
@@ -279,7 +288,7 @@ export class ItemsPage implements OnInit {
       this.cartData.totalItem = 0;
       this.cartData.totalPrice = 0;
     }
-    console.log(this.cartData)
+    console.log(this.cartData);
   }
 
   async saveToCart(){
@@ -298,6 +307,8 @@ export class ItemsPage implements OnInit {
 
   async viewCart(){
     if(this.cartData.items && this.cartData.items.length > 0) await this.saveToCart();
-    // this.router.navigate([this.router.url + '/cart']);
+    console.log('router utl: ', this.router.url);
+    this.router.navigate([this.router.url + '/cart']);
+
   }
 }
