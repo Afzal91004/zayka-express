@@ -1,0 +1,27 @@
+.time{
+    margin-top: 1vh
+}
+
+ion-item{
+    ion-label{
+        font-size: 0.95rem;
+        ion-text{
+            ion-icon{
+                font-size: 0.6rem;;
+            }
+        }
+    }
+    border-bottom: 1px dashed rgb(176, 170, 170);
+}
+
+ion-note{
+    font-size: 0.7rem;
+    ion-icon{
+        float: right;
+        padding-left: 0.3rem;
+    }
+}
+
+.ok{
+    color: green
+}
