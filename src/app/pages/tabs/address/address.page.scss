@@ -1,0 +1,36 @@
+p{
+    font-weight: lighter;
+}
+
+ion-icon{
+    align-self: start;
+    padding-right: 10px;
+}
+
+ion-label{
+    padding-top: 1px;
+    margin-top: 1px;
+}
+
+.delete{
+    color: rgb(194, 10, 10);
+}
+
+.ios{
+    ion-item-divider{
+        font-size: 0.8rem;
+        padding: 2vh
+    }
+}
+
+ion-item{
+    background-color: rgba(215, 218, 221, 0.852);
+}
+
+
+
+ion-footer{
+    ion-toolbar{
+        background: #5d0483;
+    }
+}
