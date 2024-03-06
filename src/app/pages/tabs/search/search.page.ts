@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ApiService } from 'src/app/services/api/api.service';
 
 @Component({
   selector: 'app-search',
@@ -14,54 +15,14 @@ export class SearchPage implements OnInit {
   }
   isLoading: boolean;
   query: any;
-  allRestaurants: any[] = [
-    {
-      uid: '123abc',
-      cover: 'assets/img1.jpg',
-      name: 'abc hotel',
-      short_name: 'abc',
-      cuisines: [
-        'Italian',
-        'Mexican'
-      ],
-      rating: 5,
-      delivery_time: 25,
-      price: 100
-    },
-    {
-      uid: '456xyz',
-      cover: 'assets/img2.jpg',
-      name: 'xyz hotel',
-      short_name: 'xyz',
-      cuisines: [
-        'Indian',
-        'Pakistani'
-      ],
-      rating: 5,
-      delivery_time: 15,
-      price: 900
-    },
-    {
-      uid: '789pqr',
-      cover: 'assets/img3.jpg',
-      name: 'pqr hotel',
-      short_name: 'pqr',
-      cuisines: [
-        'South Indian',
-        'Lucknowi'
-      ],
-      rating: 5,
-      delivery_time: 35,
-      price: 700
-    },
-  ];
-
+  allRestaurants: any[] = []; 
   restaurants: any[] = [];
 
-  constructor() { }
+  constructor(private api: ApiService) { }
 
   ngOnInit() {
     setTimeout(()=>{
+      this.allRestaurants = this.api.allRestaurants;
       this.sInput.setFocus();
     }, 500);
   }
