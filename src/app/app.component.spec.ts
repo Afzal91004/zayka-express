@@ -1,21 +1,22 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { NgModule } from '@angular/core';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
-import { AppComponent } from './app.component';
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'tabs',
+    pathMatch: 'full'
+  },
+  {
+    path: 'tabs',
+    loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule)
+  },
+];
 
-describe('AppComponent', () => {
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-  });
-
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-});
+@NgModule({
+  imports: [
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+  ],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }

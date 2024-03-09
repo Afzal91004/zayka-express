@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { SearchPageRoutingModule } from './search-routing.module';
 
 import { SearchPage } from './search.page';
-import { Component } from 'ionicons/dist/types/stencil-public-runtime';
 import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({

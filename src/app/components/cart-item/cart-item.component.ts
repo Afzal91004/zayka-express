@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-cart-item',
   templateUrl: './cart-item.component.html',
   styleUrls: ['./cart-item.component.scss'],
 })
-export class CartItemComponent  implements OnInit {
+export class CartItemComponent implements OnInit {
 
   @Input() item: any;
   @Input() index: any;
@@ -16,13 +16,12 @@ export class CartItemComponent  implements OnInit {
 
   ngOnInit() {}
 
-  quantityPlus(){
+  quantityPlus() {
     this.add.emit(this.index);
   }
 
-  quantityMinus(){
+  quantityMinus() {
     this.minus.emit(this.index);
   }
-
 
 }

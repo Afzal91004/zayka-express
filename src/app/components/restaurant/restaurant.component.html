@@ -1,6 +1,6 @@
 <ion-item lines="none">
   <ion-thumbnail slot="start">
-    <img [src]="restaurant?.cover ? restaurant.cover : 'assets/img1.jpg'" alt="">
+    <img [src]="restaurant?.cover ? restaurant.cover : 'assets/imgs/1.jpg'" />
   </ion-thumbnail>
   <ion-label>
     <h4>{{restaurant?.name}}</h4>
@@ -11,7 +11,7 @@
       <ion-text color="dark">
         <span>
           <ion-icon name="star"></ion-icon>
-        {{restaurant?.rating}} .
+          {{restaurant?.rating}} .
         </span>
         {{restaurant?.delivery_time}} mins . ₹{{restaurant?.price}} for two
       </ion-text>

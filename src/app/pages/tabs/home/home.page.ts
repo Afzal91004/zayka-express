@@ -7,7 +7,7 @@ import { ApiService } from 'src/app/services/api/api.service';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  
+
   banners: any[] = [];
   restaurants: any[] = [];
   isLoading: boolean = false;
@@ -18,11 +18,12 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.isLoading = true;
-    setTimeout(()=>{
+    setTimeout(() => {  
       this.banners = this.api.banners;
       this.restaurants = this.api.restaurants;
       this.isLoading = false;
-    }, 1800)
+    }, 3000);
+    
   }
 
 }

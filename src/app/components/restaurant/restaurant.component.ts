@@ -13,7 +13,8 @@ export class RestaurantComponent  implements OnInit {
 
   ngOnInit() {}
 
-  getCuisine(cuisine: any[]){
-    return cuisine.join(', ')
+  getCuisine(cuisine) {
+    return cuisine.join(', ');
   }
+
 }

@@ -15,20 +15,21 @@ export class GlobalService {
     private modalCtrl: ModalController
   ) { }
 
-  setLoader(){
+
+  setLoader() {
     this.isLoading = !this.isLoading;
   }
 
-  showAlert(message: string, header?, buttonArray?){
+  showAlert(message: string, header?, buttonArray?) {
     this.alertCtrl.create({
-      header: header ? header : 'Authentication Failed',
+      header: header ? header : 'Authentication failed',
       message: message,
       buttons: buttonArray ? buttonArray : ['Okay']
     })
     .then(alertEl => alertEl.present());
   }
 
-  async showToast(msg, color, position, duration = 3000){
+  async showToast(msg, color, position, duration = 3000) {
     const toast = await this.toastCtrl.create({
       message: msg,
       duration: duration,
@@ -38,23 +39,23 @@ export class GlobalService {
     toast.present();
   }
 
-  errorToast(msg?, duration = 4000){
-    this.showToast(msg ? msg : "No Internet Connection", 'danger', 'bottom', duration)
+  errorToast(msg?, duration = 4000) {
+    this.showToast(msg ? msg : 'No Internet Connection', 'danger', 'bottom', duration);
   }
 
-  successToast(msg){
-    this.showToast(msg, 'success', 'bottom')
+  successToast(msg) {
+    this.showToast(msg, 'success', 'bottom');
   }
 
-  showLoader(msg?, spinner?){
+  showLoader(msg?, spinner?) {
     // this.isLoading = true;
     if(!this.isLoading) this.setLoader();
     return this.loadingCtrl.create({
       message: msg,
       spinner: spinner ? spinner : 'bubbles'
     }).then(res => {
-      res.present().then(()=>{
-        if(!this.isLoading){
+      res.present().then(() => {
+        if(!this.isLoading) {
           res.dismiss().then(() => {
             console.log('abort presenting');
           });
@@ -62,38 +63,40 @@ export class GlobalService {
       })
     })
     .catch(e => {
-      console.log('show loadinhg error', e);
+      console.log('show loading error: ', e);
     });
   }
 
-  hideLoader(){
+  hideLoader() {
     // this.isLoading = false;
     if(this.isLoading) this.setLoader();
     return this.loadingCtrl.dismiss()
-    .then(()=> console.log('dismissed'))
+    .then(() => console.log('dismissed'))
     .catch(e => console.log('error hide loader: ', e));
   }
 
-  async createModal(options){
+  async createModal(options) {
     const modal = await this.modalCtrl.create(options);
     await modal.present();
-    const {data} = await modal.onWillDismiss();
+    const { data } = await modal.onWillDismiss();
     console.log(data);
     if(data) return data;
   }
 
-  modalDismiss(val?){
-    let data: any = val ? val: null;
-    console.log('data: ', data);
+  modalDismiss(val?) {
+    let data: any = val ? val : null;
+    console.log('data', data);
     this.modalCtrl.dismiss(data);
   }
-  
-  getIcon(title){
+
+  getIcon(title) {
     const name = title.toLowerCase();
-    switch(name){
+    switch(name) {
       case 'home': return 'home-outline';
       case 'work': return 'briefcase-outline';
       default: return 'location-outline';
     }
   }
+
+  
 }

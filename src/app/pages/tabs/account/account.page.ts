@@ -1,146 +1,78 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { CartService } from 'src/app/services/cart/cart.service';
+import { OrderService } from 'src/app/services/order/order.service';
 
 @Component({
   selector: 'app-account',
   templateUrl: './account.page.html',
   styleUrls: ['./account.page.scss'],
 })
-export class AccountPage implements OnInit {
+export class AccountPage implements OnInit, OnDestroy {
 
-    profile: any = {};
-    isLoading: boolean;
+  profile: any = {};
+  isLoading: boolean;
+  orders: any[] = [];
+  ordersSub: Subscription;
 
-    orders = []
-        
-
-  constructor() { }
+  constructor(
+    private orderService: OrderService,
+    private cartService: CartService
+    ) { }
 
   ngOnInit() {
+    this.ordersSub = this.orderService.orders.subscribe(order => {
+      console.log('order data: ', order);
+      if(order instanceof Array) {
+        this.orders = order;
+      } else {
+        if(order?.delete) {
+          this.orders = this.orders.filter(x => x.id != order.id);
+        } else if(order?.update) {
+          const index = this.orders.findIndex(x => x.id == order.id);
+          this.orders[index] = order;
+        } else {
+          this.orders = this.orders.concat(order);
+        }
+      }
+    }, e => {
+      console.log(e);
+    });
     this.getData();
   }
 
-  logout(){}
-
-  reorder(order){
-    console.log(order)
-  }
-
-  getHelp(order){
-    console.log(order)
-  }
-
-  getData(){
+  async getData() {
     this.isLoading = true;
-    setTimeout(()=>{
-        this.profile={
-            name: 'Mohammed Afjal Shaikh',
-            phone: '8169165594',
-            email: 'afzal91004@gmail.com'
-        }
-        this.orders= [
-            {
-                address: {
-                    address: "12/3, MG Road, Bangalore, Karnataka 560001, India",
-                    house: "Apartment 101",
-                    id: "order1",
-                    landmark:  "Bazar", 
-                    lat: 23.443353353,
-                    lng: 31.222131313,
-                    title: "MG Road Bazar",
-                    user_id: "1"
-                },
-                deliveryCharge: 20,
-                grandTotal: "540.00",
-                id: "asdenef22e23233",
-                order: [
-                    { category_id: "e10", cover: "assets/biriyani.jpg", desc: "Delicious biryani", id: "1", name: "Hyderabadi Biryani", price: "", quantity: 3 },
-                    { category_id: "e20", cover: "assets/naan.jpg", desc: "Soft naan", id: "2", name: "Butter Naan", price: "", quantity: 12 }
-                ],
-                paid: "Online",
-                restaurant: {
-                    name: "ABC Hotel",
-                    address: "34, Brigade Road, Bangalore, Karnataka 560001, India",
-                    city: "Bangalore",
-                    closeTime: "23:00",
-                    cover: "assets/img1.jpg",
-                    cuisines: "Indian"
-                },
-                restaurant_id: "1",
-                status: "Delivered",
-                time: "Mar 5, 2024 10:30 AM",
-                total: "520.00",
-                user_id: "123"
-            },
-            {
-                address: {
-                    address: "56, Park Street, Kolkata, West Bengal 700016, India",
-                    house: "Flat 202",
-                    id: "order2",
-                    landmark:  "Market", 
-                    lat: 24.443353353,
-                    lng: 30.222131313,
-                    title: "LBS Marg Market",
-                    user_id: "2"
-                },
-                deliveryCharge: 15,
-                grandTotal: "450.00",
-                id:"fed23224423fewfefew",
-                order: [
-                    { category_id: "e30", cover: "assets/dosa.jpeg", desc: "Crispy dosa", id: "3", name: "Masala Dosa", price: "", quantity: 2 },
-                    { category_id: "e40", cover: "assets/samosa.jpg", desc: "Spicy samosa", id: "4", name: "Aloo Samosa", price: "", quantity: 5 }
-                ],
-                paid: "COD",
-                restaurant: {
-                    name: "XYZ Hotel",
-                    address: "78, Park Street, Kolkata, West Bengal 700016, India",
-                    city: "Kolkata",
-                    closeTime: "22:30",
-                    cover: "assets/img2.jpg",
-                    cuisines: "South Indian"
-                },
-                restaurant_id: "2",
-                status: "Delivered",
-                time: "Mar 5, 2024 12:45 PM",
-                total: "435.00",
-                user_id: "456"
-                
-            },
-            {
-                address: {
-                    address: "89, Cyber City, Gurgaon, Haryana 122002, India",
-                    house: "House 30",
-                    id: "order3",
-                    landmark:  "HP Petroleum", 
-                    lat: 25.443353353,
-                    lng: 29.222131313,
-                    title: "Momin HP Petroleum",
-                    user_id: "3"
-                },
-                deliveryCharge: 10,
-                grandTotal: "360.00",
-                id: "12332dsfhjf",
-                order: [
-                    { category_id: "e50", cover: "assets/paneer.jpg", desc: "Creamy paneer", id: "5", name: "Paneer Butter Masala", price: "", quantity: 1 }
-                ],
-                paid: "Online",
-                restaurant: {
-                    name: " Hotel",
-                    address: "90, Cyber City, Gurgaon, Haryana 122002, India",
-                    city: "Gurgaon",
-                    closeTime: "21:00",
-                    cover: "assets/img3.jpg",
-                    cuisines: "North Indian"
-                },
-                restaurant_id: "3",
-                status: "Delivered",
-                time: "Mar 5, 2024 2:15 PM",
-                total: "350.00",
-                user_id: "789"
-            }
-        ];
-        this.isLoading= false;
-    }, 2000)
-    
+    setTimeout(async() => {
+      this.profile = {      
+        name: 'Mohammed Afjal Shaikh',
+        phone: '8169165594',
+        email: 'afzal91004@gmail.com'  
+      };
+      await this.orderService.getOrders();
+      this.isLoading = false;      
+    }, 3000);
+  }
+
+  logout() {}
+
+  async reorder(order) {
+    console.log(order);
+    let data: any = await this.cartService.getCart();
+    console.log('data: ', data);
+    if(data?.value) {
+      this.cartService.alertClearCart(null, null, null, order);
+    } else {
+      this.cartService.orderToCart(order);
+    }
+  }
+
+  getHelp(order) {
+    console.log(order);
+  }
+
+  ngOnDestroy() {
+    if(this.ordersSub) this.ordersSub.unsubscribe();
   }
 
 }

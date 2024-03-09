@@ -8,38 +8,38 @@ import { ApiService } from 'src/app/services/api/api.service';
 })
 export class SearchPage implements OnInit {
 
-  @ViewChild('searchInput') sInput: { setFocus: () => void; };
+  @ViewChild('searchInput') sInput;
   model: any = {
     icon: 'search-outline',
     title: 'No Restaurants Record Found'
-  }
+  };
   isLoading: boolean;
   query: any;
-  allRestaurants: any[] = []; 
+  allRestaurants: any[] = [];
   restaurants: any[] = [];
 
   constructor(private api: ApiService) { }
 
   ngOnInit() {
-    setTimeout(()=>{
+    setTimeout(() => {
       this.allRestaurants = this.api.allRestaurants;
       this.sInput.setFocus();
     }, 500);
   }
 
-  async onSearchChange(event){
+  async onSearchChange(event) {
     console.log(event.detail.value);
     this.query = event.detail.value.toLowerCase();
     this.restaurants = [];
-    if(this.query.length > 0){
+    if(this.query.length > 0) {
       this.isLoading = true;
-      setTimeout(async () => {
+      setTimeout(async() => {
         this.restaurants = await this.allRestaurants.filter((element: any) => {
           return element.short_name.includes(this.query);
         });
         console.log(this.restaurants);
         this.isLoading = false;
-      }, 2000)
+      }, 3000);
     }
   }
 

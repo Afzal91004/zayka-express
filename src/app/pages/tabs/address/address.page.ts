@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AddressService } from 'src/app/services/address/address.service';
+import { ApiService } from 'src/app/services/api/api.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 
 @Component({
@@ -6,54 +9,47 @@ import { GlobalService } from 'src/app/services/global/global.service';
   templateUrl: './address.page.html',
   styleUrls: ['./address.page.scss'],
 })
-export class AddressPage implements OnInit {
+export class AddressPage implements OnInit, OnDestroy {
 
   isLoading: boolean;
   addresses: any[]=[];
+  addressesSub: Subscription;
+  model: any ={
+    title: "No Addresses Added yet",
+    icon: "location-outline"
+  }
 
   constructor(
-    private global: GlobalService
+    private global: GlobalService,
+    private addressService: AddressService,
+    private api: ApiService
   ) { }
 
   ngOnInit() {
+    this.addressesSub = this.addressService.addresses.subscribe(address =>{
+      console.log('addresses: ', address);
+      if(address instanceof Array){
+        this.addresses = address;
+      } else {
+        if(address?.delete){
+          this.addresses = this.addresses.filter(x => x.id != address.id)
+        } else if(address?.update){
+          const index = this.addresses.findIndex(x => x.id == address.id);
+          this.addresses[index] = address;
+        } else {
+          this.addresses = this.addresses.concat(address)
+        }
+      }
+    });
     this.getAddresses();
   }
 
-  getAddresses(){
+  async getAddresses(){
+    
     this.isLoading = true;
-    setTimeout(()=>{
-      this.addresses = [
-        {
-          address: "MG Road, Bangalore, Karnataka 560001, India",
-          house: "KromaApps Office,",
-          id: "order1",
-          landmark:  "", 
-          lat: 23.443353353,
-          lng: 31.222131313,
-          title: "Work",
-          user_id: "1"
-        },
-        {
-          address: "56, Park Street, Kolkata, West Bengal 700016, India",
-          house: "Flat 202",
-          id: "order2",
-          landmark:  "Market", 
-          lat: 24.443353353,
-          lng: 30.222131313,
-          title: "LBS Marg Market",
-          user_id: "2"
-        },
-        {
-          address: "Shil-Mhape Road, Shil - 421204",
-          house: "304/A, Ameen Palace,",
-          id: "order3",
-          landmark:  "HP Petroleum", 
-          lat: 25.443353353,
-          lng: 29.222131313,
-          title: "Home",
-          user_id: "3"
-        },
-      ];
+    setTimeout(async ()=>{
+      await this.addressService.getAddresses();
+      console.log(this.addresses)
       this.isLoading = false;
     }, 1800)
   }
@@ -63,11 +59,36 @@ export class AddressPage implements OnInit {
   }
 
   editAddress(address){
-    console.log(address)
+    
   }
 
   deleteAddress(address){
-    console.log(address)
+    console.log('addres: ',address);
+    this.global.showAlert(
+      'Are you sure you want to delete this Address?',
+      'Confirm',
+      [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: ()=>{
+            console.log('cancel');
+            return;
+          }
+        },
+        {
+          text: 'Yes',
+          handler: async () => {
+            this.global.showLoader();
+            await this.addressService.deleteAddress(address);
+            this.global.hideLoader();
+          }
+        }
+      ]
+    )
+  }
+  ngOnDestroy(){
+    if(this.addressesSub) this.addressesSub.unsubscribe()
   }
 
 }
