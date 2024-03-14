@@ -3,15 +3,19 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { GlobalService } from '../global/global.service';
 import { StorageService } from '../storage/storage.service';
+import { Cart } from 'src/app/models/cart.model';
+import { Item } from 'src/app/models/item.model';
+import { Restaurant } from 'src/app/models/restaurant.model';
+import { Order } from 'src/app/models/order.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
 
-  model: any = {};
+  model = {} as Cart;
   deliveryCharge = 20;
-  private _cart = new BehaviorSubject<any>(null);
+  private _cart = new BehaviorSubject<Cart>(null);
 
   get cart() {
     return this._cart.asObservable();
@@ -19,7 +23,7 @@ export class CartService {
 
   constructor(
     private storage: StorageService, 
-    private global: GlobalService,
+    private global: GlobalService, 
     private router: Router
   ) { }
 
@@ -57,7 +61,7 @@ export class CartService {
           text: 'Yes',
           handler: () => {
             this.clearCart();
-            this.model = {};
+            this.model = {} as Cart;
             if(order) {
               this.orderToCart(order);
             } else this.quantityPlus(index, items, data);
@@ -67,7 +71,7 @@ export class CartService {
     )
   }
 
-  async orderToCart(order) {
+  async orderToCart(order: Order) {
     console.log('order: ', order);
     const data = {
       restaurant: order.restaurant,
@@ -81,14 +85,14 @@ export class CartService {
     this.router.navigate(['/', 'tabs', 'restaurants', order.restaurant_id]);
   }
 
-  async quantityPlus(index, items?, restaurant?) {
+  async quantityPlus(index, items?: Item[], restaurant?: Restaurant) {
     try {
       if(items) {
         console.log('model: ', this.model);
         this.model.items = [...items];
       }
       if(restaurant) {
-        this.model.restaurant = {}; 
+        // this.model.restaurant = {}; 
         this.model.restaurant = restaurant; 
       }
       console.log('q plus: ', this.model.items[index]);
@@ -106,9 +110,14 @@ export class CartService {
     }
   }
 
-  async quantityMinus(index) {
+  async quantityMinus(index, items?: Item[]) {
     try {
-      if(this.model.items[index].quantity !== 0) {
+      if(items) {
+        console.log('model: ', this.model);
+        this.model.items = [...items];
+      }
+      console.log('item: ', this.model.items[index]);
+      if(this.model.items[index].quantity && this.model.items[index].quantity !== 0) {
         this.model.items[index].quantity -= 1; // this.model.items[index].quantity = this.model.items[index].quantity - 1
       } else {
         this.model.items[index].quantity = 0;
@@ -130,17 +139,19 @@ export class CartService {
     this.model.grandTotal = 0;
     item.forEach(element => {
       this.model.totalItem += element.quantity;
-      this.model.totalPrice += (parseFloat(element.price) * parseFloat(element.quantity));
+      // this.model.totalPrice += (parseFloat(element.price) * parseFloat(element.quantity));
+      this.model.totalPrice += element.price * element.quantity;
     });
     this.model.deliveryCharge = this.deliveryCharge;
-    this.model.totalPrice = parseFloat(this.model.totalPrice).toFixed(2);
-    this.model.grandTotal = (parseFloat(this.model.totalPrice) + parseFloat(this.model.deliveryCharge)).toFixed(2);
+    // this.model.totalPrice = parseFloat(this.model.totalPrice).toFixed(2);
+    // this.model.grandTotal = (parseFloat(this.model.totalPrice) + parseFloat(this.model.deliveryCharge)).toFixed(2);
+    this.model.grandTotal = this.model.totalPrice + this.model.deliveryCharge;
     if(this.model.totalItem == 0) {
       this.model.totalItem = 0;
       this.model.totalPrice = 0;
       this.model.grandTotal = 0;
       await this.clearCart();
-      this.model = {};
+      this.model = {} as Cart;
     }
     console.log('cart: ', this.model);
   }
