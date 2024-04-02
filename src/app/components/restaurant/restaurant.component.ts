@@ -17,5 +17,5 @@ export class RestaurantComponent  implements OnInit {
   getCuisine(cuisine) {
     return cuisine.join(', ');
   }
-
+ 
 }

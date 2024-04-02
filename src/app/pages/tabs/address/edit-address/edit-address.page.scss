@@ -1,0 +1,34 @@
+ion-toolbar {
+    --background: transparent;
+    --ion-color-base: transparent !important;
+
+}
+
+.map {
+    height: 30vh;
+}
+
+ion-item{
+    align-items: center;
+    ion-button {
+        background-color: white;
+        color:white;
+        span{
+            color: rgb(155, 7, 7);
+        }
+        // ion-spinner{
+        //     height: 0.2rem
+        // }
+    }
+    ion-label {
+        span {
+            font-size: 0.8rem;
+            color: gray
+        }
+    }
+}
+
+ion-spinner{
+    height: 1.3rem;
+}
+

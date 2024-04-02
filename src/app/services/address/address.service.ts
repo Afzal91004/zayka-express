@@ -6,7 +6,7 @@ import { Address } from 'src/app/models/address.model';
 @Injectable({
   providedIn: 'root'
 })
-export class AddressService {
+export class  AddressService {
 
   private _addresses = new BehaviorSubject<Address[]>([]);
 
